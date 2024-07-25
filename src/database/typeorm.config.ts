@@ -1,0 +1,20 @@
+import {DataSource} from "typeorm";
+import {DataSourceOptions} from "typeorm/data-source";
+import {SeederOptions} from "typeorm-extension";
+
+import {CustomNamingStrategy} from "@database/naming.strategy";
+
+const options: Partial<DataSourceOptions> & SeederOptions = {
+    // @ts-expect-error - Type 'string' is not assignable to type 'DatabaseType'
+    type: process.env.RDB_TYPE,
+    host: process.env.RDB_HOST,
+    port: parseInt(process.env.RDB_PORT, 10),
+    database: process.env.RDB_NAME,
+    username: process.env.RDB_USER,
+    password: process.env.RDB_PASSWORD,
+    entities: [`${__dirname}/../**/*.entity.{ts,js}`],
+    migrations: [`${__dirname}/**/migrations/*.{ts,js}`],
+    seeds: [`${__dirname}/**/seeds/*.{ts,js}`],
+    namingStrategy: new CustomNamingStrategy(),
+};
+export default new DataSource(options as DataSourceOptions & SeederOptions);
